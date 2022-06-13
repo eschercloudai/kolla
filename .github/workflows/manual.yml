@@ -7,8 +7,12 @@ on:
   workflow_dispatch:
     inputs:
       image:
-        description: 'Target image'
+        description: 'Target image(s)'
         default: 'keystone'
+        required: true
+      release:
+        description: 'Target release'
+        default: 'yoga'
         required: true
 
 jobs:
@@ -17,7 +21,9 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v3
+      with:
+        ref: stable/${{ github.event.inputs.release }}
 
     - name: Set up Python
       uses: actions/setup-python@v2.2.1
@@ -27,5 +33,5 @@ jobs:
     - name: Install requirements
       run: pip install -r requirements.txt
 
-    - name: Build target image
-      run: python tools/build.py -b ubuntu ${{ github.event.inputs.image }}
+    - name: Build target image(s)
+      run: python tools/build.py -b ubuntu ${{ github.event.inputs.image }} --registry ghcr.io/eschercloudai --tag ${{ github.event.inputs.release }}-$(git rev-parse --short HEAD)
