@@ -1,0 +1,19 @@
+name: Build an image
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Target image'
+        default: 'keystone'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install requirements
+      run: pip install -r requirements.txt
